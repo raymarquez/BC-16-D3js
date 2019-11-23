@@ -1,18 +1,18 @@
 var svgWidth = 500;
 var svgHeight = 500;
 
-var margin1 = {
-  top: 20,
-  right: 40,
-  bottom: 60,
-  left: 20
-};
 
+var margin1 = {
+  top: 200,
+  right: 10,
+  bottom: 120,
+  left: 90
+};
 var margin2 = {
-    top: 20,
-    right: 40,
-    bottom: 60,
-    left: 150
+    top: 700,
+    right: 130,
+    bottom: 300,
+    left: 20
   };
 
 var width1 = svgWidth - margin1.left - margin1.right;
@@ -155,7 +155,7 @@ d3.csv("assets/data/data.csv").then(function(healthriskData) {
     chartGroup.append("text")
       .attr("transform", `translate(${width2 / 2}, ${height2 + margin2.top + 30})`)
       .attr("class", "axisText")
-      .text("Hair Metal Band Hair Length (inches)");
+      .text("Hair Metal Band Hair Length (inches).");
   }).catch(function(error) {
     console.log(error);
   });
