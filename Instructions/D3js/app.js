@@ -1,7 +1,11 @@
-var svgWidth = 500;
-var svgHeight = 500;
-
-
+//+---------------------------------------------------------------
+//| set variables 
+//+---------------------------------------------------------------
+var svgWidth = 600;
+var svgHeight = 550;
+//+---------------------------------------------------------------
+//| set margins, widths and heights 
+//+---------------------------------------------------------------
 var margin1 = {
   top: 200,
   right: 10,
@@ -9,26 +13,27 @@ var margin1 = {
   left: 90
 };
 var margin2 = {
-    top: 700,
+    top: 500,
     right: 130,
     bottom: 300,
     left: 20
   };
-
 var width1 = svgWidth - margin1.left - margin1.right;
 var height1 = svgHeight - margin1.top - margin1.bottom;
 var width2 = svgWidth - margin2.left - margin2.right;
 var height2 = svgHeight - margin2.top - margin2.bottom;
-
+//+---------------------------------------------------------------
+//| set charts
+//+---------------------------------------------------------------
 var svg = d3.select(".chart")
   .append("svg")
   .attr("width", svgWidth)
   .attr("height", svgHeight);
-
 var chartGroup = svg.append("g")
   .attr("transform", `translate(${margin1.left}, ${margin1.top})`);
-
-
+//+---------------------------------------------------------------
+//| get data for chart
+//+---------------------------------------------------------------
 d3.csv("assets/data/data.csv").then(function(healthriskData) {
   
     console.log(healthriskData);
@@ -39,10 +44,8 @@ d3.csv("assets/data/data.csv").then(function(healthriskData) {
         data.healthcare = +data.healthcare;
         data.smokes = +data.smokes;
       });
-
-
     var xLinearScale = d3.scaleLinear()
-      .domain([20, d3.max(healthriskData, d => d.healthcare)])
+      .domain([2, d3.max(healthriskData, d => d.healthcare)])
       .range([0, width1]);
     var yLinearScale = d3.scaleLinear()
       .domain([0, d3.max(healthriskData, d => d.poverty)])
@@ -50,21 +53,26 @@ d3.csv("assets/data/data.csv").then(function(healthriskData) {
     var bottomAxis = d3.axisBottom(xLinearScale);
     var leftAxis = d3.axisLeft(yLinearScale);
 
+//+---------------------------------------------------------------
+//| FIRST
+//+---------------------------------------------------------------
     chartGroup.append("g")
       .attr("transform", `translate(0, ${height1})`)
       .call(bottomAxis);
 
     chartGroup.append("g")
       .call(leftAxis);
-
+//+---------------------------------------------------------------
+//| mark data points as CIRCLES
+//+---------------------------------------------------------------
      var circlesGroup = chartGroup.selectAll("circle")
     .data(healthriskData)
     .enter()
     .append("circle")
     .attr("cx", d => xLinearScale(d.healthcare))
     .attr("cy", d => yLinearScale(d.poverty))
-    .attr("r", "15")
-    .attr("fill", "pink")
+    .attr("r", "6")
+    .attr("fill", "lightblue")
 
     var toolTip = d3.tip()
       .attr("class", "tooltip")
@@ -74,26 +82,30 @@ d3.csv("assets/data/data.csv").then(function(healthriskData) {
       });
 
     chartGroup.call(toolTip);
-
+//+---------------------------------------------------------------
+//| listen for a click or mouseout
+//+---------------------------------------------------------------
     circlesGroup.on("click", function(data) {
       toolTip.show(data, this);
     })
       .on("mouseout", function(data, index) {
         toolTip.hide(data);
       });
-
+//+---------------------------------------------------------------
+//| label 'em axis
+//+---------------------------------------------------------------
     chartGroup.append("text")
       .attr("transform", "rotate(-90)")
       .attr("y", 0 - margin1.left + 40)
       .attr("x", 0 - (height1 / 2))
       .attr("dy", "1em")
       .attr("class", "axisText")
-      .text("Number of Billboard 100 Hits");
+      .text("Number of Billboard 100 Hits!");
 
     chartGroup.append("text")
       .attr("transform", `translate(${width1 / 2}, ${height1 + margin1.top + 30})`)
       .attr("class", "axisText")
-      .text("Hair Metal Band Hair Length (inches)");
+      .text("Hair Metal Band Hair Length (in)");
 
 
     var xLinearScale = d3.scaleLinear()
@@ -106,15 +118,18 @@ d3.csv("assets/data/data.csv").then(function(healthriskData) {
 
     var bottomAxis = d3.axisBottom(xLinearScale);
     var leftAxis = d3.axisLeft(yLinearScale);
-
+//+---------------------------------------------------------------
+//| SECOND 
+//+---------------------------------------------------------------
     chartGroup.append("g")
       .attr("transform", `translate(0, ${height2})`)
       .call(bottomAxis);
 
     chartGroup.append("g")
       .call(leftAxis);
-
-
+//+---------------------------------------------------------------
+//| mark data points as CIRCLE
+//+---------------------------------------------------------------
     var circlesGroup = chartGroup.selectAll("circle")
     .data(healthriskData)
     .enter()
@@ -130,11 +145,10 @@ d3.csv("assets/data/data.csv").then(function(healthriskData) {
       .html(function(d) {
         return (`${d.state}<br>Hair length: ${d.smokes}<br>Hits: ${d.age}`);
       });
-
-
     chartGroup.call(toolTip);
-
-
+//+---------------------------------------------------------------
+//| listen for a click or mouseout
+//+---------------------------------------------------------------
     circlesGroup.on("click", function(data) {
       toolTip.show(data, this);
     })
@@ -142,12 +156,13 @@ d3.csv("assets/data/data.csv").then(function(healthriskData) {
       .on("mouseout", function(data, index) {
         toolTip.hide(data);
       });
-
-
+//+---------------------------------------------------------------
+//| label 'em axis
+//+---------------------------------------------------------------
     chartGroup.append("text")
       .attr("transform", "rotate(-90)")
       .attr("y", 0 - margin2.left + 40)
-      .attr("x", 0 - (height2 / 2))
+      .attr("x", 0 - (height2 / 1))
       .attr("dy", "1em")
       .attr("class", "axisText")
       .text("Number of Billboard 100 Hits");
@@ -155,7 +170,7 @@ d3.csv("assets/data/data.csv").then(function(healthriskData) {
     chartGroup.append("text")
       .attr("transform", `translate(${width2 / 2}, ${height2 + margin2.top + 30})`)
       .attr("class", "axisText")
-      .text("Hair Metal Band Hair Length (inches).");
+      .text("Hair Metal Band Hair Length (in)");
   }).catch(function(error) {
     console.log(error);
   });
